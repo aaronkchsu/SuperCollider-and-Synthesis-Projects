@@ -1,0 +1,27 @@
+
+
+
+(
+SynthDef("Theremin", {
+	arg freq = 440, depth = 0.02, left = 0.5, right = 0.6, controlSpeed = 6;
+	var vibrato, mix;
+	vibrato = SinOsc.kr(controlSpeed, mul: depth, add: 1);
+	mix = SinOsc.ar(freq * vibrato);
+	mix = CombN.ar(mix, 1.0, [left, right], 1) + mix;
+	mix;
+	Out.ar(0, mix);
+}).load;
+
+
+// quick and easy interface
+ControlSpec.specs.addAll(
+	[
+		\freq -> ControlSpec(20, 2000, 1, 1, 440),
+		\left -> ControlSpec(0.1, 1, 0, 0.01, 0.45),
+		\right -> ControlSpec(0.1, 1, 0, 0.01, 0.6),
+		\depth -> ControlSpec(0, 1, 0, 0.01, 0.02),
+		\controlSpeed -> ControlSpec(1, 50, 1, 1, 6)
+	]
+);
+SynthDescLib.global[\Theremin].makeWindow;
+)

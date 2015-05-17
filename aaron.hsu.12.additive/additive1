@@ -1,0 +1,13 @@
+(
+{
+	var mix;
+	Mix.fill(30, {|counter|
+		var amp, fund;
+		fund = rrand(10, 500);
+		Pan2.ar(
+			SinOsc.ar(fund * (counter+1),
+				mul: (1/(counter+1)) * max(0, SinOsc.kr((counter + 1)/30))),
+			0) // pan position
+	})
+}.play
+)

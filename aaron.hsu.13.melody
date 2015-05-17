@@ -1,0 +1,29 @@
+MIDIClient.init; m = MIDIOut(0, MIDIClient.destinations.at(0).uid);
+
+(
+~note = [[66, 64, 68], [73], [64], [76], [64], [73], [61], [0], [59], [73], [64], [0], [62], [0], [67], [0], [60], [78], [80], [0], [80]];
+// ~weights = [];
+
+r = Task({
+	220.do({ |ct|
+			var note, inst, rand;
+		rand = rrand(0, 16);
+			inst = 0;
+		if(ct < 21, {note = ~note.wrapAt(ct + rand).choose});
+		if(ct > 20, {note = 64});
+		if(ct > 45, {note = ~note.wrapAt(ct + rand).choose});
+		if(ct > 180, {note = 64});
+		if(ct > 202, {note = ~note.wrapAt(ct + rand).choose});
+		if(note != 0,
+			{m.noteOn(inst, note, 100);
+				thisThread.clock.sched(0.2, {m.noteOff(inst, note); nil});});
+			(0.10.value).wait
+		});
+	});
+r.start;
+)
+
+
+r.stop; 4.do({|e| 127.do({|i| m.noteOff(e, i, 0)})})
+
+
